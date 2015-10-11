@@ -1,8 +1,11 @@
-﻿Build started 10/10/2015 11:48:04 AM.
+﻿Build started 10/10/2015 5:08:14 PM.
      1>Project "C:\Users\Michael\Documents\Visual Studio 2015\Projects\Cpts455Project1Server\Cpts455Project1Server\Cpts455Project1Server.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TC /analyze- /errorReport:prompt Main.c
          Main.c
+     1>c:\users\michael\documents\visual studio 2015\projects\cpts455project1server\cpts455project1server\main.c(150): warning C4133: 'function': incompatible types - from 'UINT16 *' to 'char *'
+     1>c:\users\michael\documents\visual studio 2015\projects\cpts455project1server\cpts455project1server\main.c(173): warning C4267: 'function': conversion from 'size_t' to 'u_short', possible loss of data
+     1>c:\users\michael\documents\visual studio 2015\projects\cpts455project1server\cpts455project1server\main.c(175): warning C4133: 'function': incompatible types - from 'UINT16 *' to 'const char *'
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Michael\Documents\Visual Studio 2015\Projects\Cpts455Project1Server\Debug\Cpts455Project1Server.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\Michael\Documents\Visual Studio 2015\Projects\Cpts455Project1Server\Debug\Cpts455Project1Server.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Michael\Documents\Visual Studio 2015\Projects\Cpts455Project1Server\Debug\Cpts455Project1Server.lib" /MACHINE:X86 Debug\Main.obj
          Cpts455Project1Server.vcxproj -> C:\Users\Michael\Documents\Visual Studio 2015\Projects\Cpts455Project1Server\Debug\Cpts455Project1Server.exe
@@ -10,4 +13,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:03.95
+Time Elapsed 00:00:00.60

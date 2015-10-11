@@ -15,6 +15,17 @@
 #define DEFAULT_BUFLEN 512
 //#define DEFAULT_PORT "27015"
 
+void printNewLineString(char charbuf[])
+{
+	int i = 0;
+	while (charbuf[i] != '\n')
+	{
+		printf("%c", charbuf[i]);
+		i++;
+	}
+	printf("\n");
+}
+
 int __cdecl main(int argc, char **argv)
 {
 	WSADATA wsaData;
@@ -29,9 +40,11 @@ int __cdecl main(int argc, char **argv)
 	int iSendResult;
 	char recvbuf[DEFAULT_BUFLEN];
 	int recvbuflen = DEFAULT_BUFLEN;
-
+	UINT16 networkbytes;
 	char welcomeMessage[8] = "Welcome\n";
-
+	char successMessage[8] = "Success\n";
+	char failureMessage[8] = "Failure\n";
+	char endMessage[20] = "it is over\0";
 	// Initialize Winsock
 	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (iResult != 0) {
@@ -96,54 +109,83 @@ int __cdecl main(int argc, char **argv)
 
 	
 	//send Client welcome message
-	iSendResult = send(ClientSocket, recvbuf, iResult, 0);
+	iSendResult = send(ClientSocket, welcomeMessage, 8, 0);
 	if (iSendResult == SOCKET_ERROR) {
 		printf("send failed with error: %d\n", WSAGetLastError());
 		closesocket(ClientSocket);
 		WSACleanup();
 		return 1;
 	}
-	printf("Bytes sent: %d\n", iSendResult);
 
-	
-	// Receive until the peer shuts down the connection
-	do {
-
-		iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
-		if (iResult > 0) {
-			printf("Bytes received: %d\n", iResult);
-
-			// Echo the buffer back to the sender
-			iSendResult = send(ClientSocket, recvbuf, iResult, 0);
-			if (iSendResult == SOCKET_ERROR) {
-				printf("send failed with error: %d\n", WSAGetLastError());
-				closesocket(ClientSocket);
-				WSACleanup();
-				return 1;
-			}
-			printf("Bytes sent: %d\n", iSendResult);
-		}
-		else if (iResult == 0)
-			printf("Connection closing...\n");
-		else {
-			printf("recv failed with error: %d\n", WSAGetLastError());
-			closesocket(ClientSocket);
-			WSACleanup();
-			return 1;
-		}
-
-	} while (iResult > 0);
-
-	// shutdown the connection since we're done
-	iResult = shutdown(ClientSocket, SD_SEND);
+	//get id number and name
+	iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
 	if (iResult == SOCKET_ERROR) {
-		printf("shutdown failed with error: %d\n", WSAGetLastError());
+		printf("send failed with error: %d\n", WSAGetLastError());
 		closesocket(ClientSocket);
 		WSACleanup();
 		return 1;
 	}
+	printNewLineString(recvbuf);
+	iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
+	if (iResult == SOCKET_ERROR) {
+		printf("send failed with error: %d\n", WSAGetLastError());
+		closesocket(ClientSocket);
+		WSACleanup();
+		return 1;
+	}
+	printNewLineString(recvbuf);
 
-	// cleanup
+	//send success
+	iSendResult = send(ClientSocket, successMessage, 8, 0);
+	if (iSendResult == SOCKET_ERROR) {
+		printf("send failed with error: %d\n", WSAGetLastError());
+		closesocket(ClientSocket);
+		WSACleanup();
+		return 1;
+	}
+	
+
+	//get password length and password
+	printf("getting lenght\n");
+	iResult = recv(ClientSocket, &networkbytes, sizeof(UINT16), 0);
+	if (iResult == SOCKET_ERROR) {
+		printf("send failed with error: %d\n", WSAGetLastError());
+		closesocket(ClientSocket);
+		WSACleanup();
+		return 1;
+	}
+	
+	networkbytes = ntohs(networkbytes);
+	printf("length send is %hd\n", networkbytes);
+	printf("getting password\n");
+	iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
+	if (iResult == SOCKET_ERROR) {
+		printf("send failed with error: %d\n", WSAGetLastError());
+		closesocket(ClientSocket);
+		WSACleanup();
+		return 1;
+	}
+	recvbuf[iResult] = 0;
+	printf("%s", recvbuf);
+
+	//send end message
+	printf("sending end message");
+	networkbytes = htons(strlen(endMessage));
+	printf("sending length %hd", strlen(endMessage));
+	iSendResult = send(ClientSocket, &networkbytes, sizeof(UINT16) , 0);
+	if (iSendResult == SOCKET_ERROR) {
+		printf("send failed with error: %d\n", WSAGetLastError());
+		closesocket(ClientSocket);
+		WSACleanup();
+		return 1;
+	}
+	iSendResult = send(ClientSocket, endMessage, (int)strlen(endMessage), 0);
+	if (iSendResult == SOCKET_ERROR) {
+		printf("send failed with error: %d\n", WSAGetLastError());
+		closesocket(ClientSocket);
+		WSACleanup();
+		return 1;
+	}
 	closesocket(ClientSocket);
 	WSACleanup();
 
